@@ -1,103 +1,35 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// authSlice.js
+
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    message: "",
-    user: "",
-    accessToken: "",
-    loading: false,
-    error: ""
-}
-
-export const signUpUser = createAsyncThunk('signupuser', async (body) => {
-    const res = await fetch("ddd", {
-        method: "post",
-        headers: {
-            'content-Type': "application/json"
-        },
-
-        body: JSON.stringify(body)
-    })
-    return await res.json();
-})
-
-export const signInUser = createAsyncThunk('signinuser', async (body) => {
-    const res = await fetch("https://be-great-finance.herokuapp.com/api/users/signin", {
-        method: "post",
-        headers: {
-            'content-Type': "application/json"
-        },
-
-        body: JSON.stringify(body)
-    })
-    return await res.json();
-    
-})
-
-
+  isAuthenticated: false,
+  user: null,
+  error: null,
+};
 
 const authSlice = createSlice({
-    name: 'user',
-    initialState,
-    reducers: {
-
-        addToken: (state, action) => {
-            state.accessToken = localStorage.getItem("accessToken")
-        },
-
-        addUser: (state, action) => {
-            state.user = localStorage.getItem("user")
-        },
-
-        logout: (state, action) => {
-            state.token = null,
-                localStorage.clear();
-        },
-
-
+  name: 'auth',
+  initialState,
+  reducers: {
+    loginSuccess: (state, action) => {
+      state.isAuthenticated = true;
+      state.user = action.payload;
+      state.error = null;
     },
-    extraReducers: {
-        //login
-        [signInUser.pending]: (state, action) => {
-            state.loading = true
-        },
+    loginFailure: (state, action) => {
+      state.isAuthenticated = false;
+      state.user = null;
+      state.error = action.payload;
+    },
+    logout: (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
+      state.error = null;
+    },
+  },
+});
 
-        [signInUser.fulfilled]: (state, { payload: { error, message, accessToken, user } }) => {
-            state.loading = false;
-            if (error) {
-                state.error = error;
-            } else {
-                state.message = message;
-                state.accessToken = accessToken;
-                state.user = user;
-                localStorage.setItem('message', message)
-                localStorage.setItem('user', JSON.stringify())
-                localStorage.setItem('accessToken', accessToken)
-            }
-        },
+export const { loginSuccess, loginFailure, logout } = authSlice.actions;
 
-        [signInUser.rejected]: (state, action) => {
-            state.loading = true
-        },
-
-        //sign up
-        [signUpUser.pending]: (state, action) => {
-            state.loading = true
-        },
-
-        [signUpUser.fulfilled]: (state, { payload: { error, message } }) => {
-            state.loading = false;
-            if (error) {
-                state.error = error
-            } else {
-                state.message = message
-            }
-        },
-
-        [signUpUser.rejected]: (state, action) => {
-            state.loading = true
-        },
-    }
-})
-
-export const { addToken, addUser, logout } = authSlice.actions;
-export default authSlice.reducer
+export default authSlice.reducer;

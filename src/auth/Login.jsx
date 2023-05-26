@@ -1,44 +1,58 @@
-import React, {useState} from 'react'
-import { signInUser } from '../redux/authSlice'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux';
+// LoginForm.js
 
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../redux/authActions';
 
-
-const Login = () => {
-  
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const user = useSelector(state => state.user);
+const LoginForm = () => {
   const dispatch = useDispatch();
+  const error = useSelector((state) => state.auth.error);
 
-  const HandleLogin = () => {
-    dispatch(signInUser({email,password}))
-    console.log(user)
-    if (user) {
-      // User is logged in, redirect to dashboard
-      window.location.href = "/dashboard";
-    }
-  }
- 
-console.log(user)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Dispatch the loginUser action
+    dispatch(loginUser({ email, password }));
+  };
 
   return (
-    
-    <div>
-      <div className='flex flex-col items-start   '>
-        <h1> Login </h1>
-
-        <label> Email </label>
-        <input type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} />
-
-        <label> Password </label>
-        <input type='password' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
-
-        <button onClick={HandleLogin} className='mt-10'> Login </button>
-      </div>
+    <div className="max-w-md mx-auto">
+      <h2 className="text-2xl font-semibold mb-4">Login</h2>
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2" htmlFor="email">
+            Email
+          </label>
+          <input
+            className="border border-gray-300 rounded px-4 py-2 w-full"
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2" htmlFor="password">
+            Password
+          </label>
+          <input
+            className="border border-gray-300 rounded px-4 py-2 w-full"
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+          Login
+        </button>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default LoginForm;
