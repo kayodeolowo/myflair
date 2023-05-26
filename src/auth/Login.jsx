@@ -14,10 +14,6 @@ const Login = () => {
 
   const HandleLogin = () => {
     dispatch(signInUser({email,password}))
-    console.log(user)
-    if (user) {
-      // User is logged in, redirect to dashboard
-      window.location.href = "/dashboard";
     }
   }
  
