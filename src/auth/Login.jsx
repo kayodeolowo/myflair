@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import { signInUser } from '../redux/authSlice'
 import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux';
+import { user } from '../redux/authSlice';
+
 
 
 
@@ -9,15 +10,14 @@ const Login = () => {
   
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   const HandleLogin = () => {
     dispatch(signInUser({email,password}))
-    }
   }
+
  
-console.log(user)
+
 
   return (
     
@@ -38,3 +38,4 @@ console.log(user)
 }
 
 export default Login
+
